@@ -35,7 +35,7 @@ var googleMap = (function() {
 			});
 		
 		new api.Geocoder().geocode({
-			'latLng': e.latLng
+			location: e.latLng
 		}, function(results) {
 			$('<h3 />', {
 				text: (clicks === 0) ? 'Start' : 'End'
@@ -43,14 +43,14 @@ var googleMap = (function() {
 			$('<p />', {
 				text: results[0].formatted_address,
 				id: (clicks === 0) ? 'StartPoint' : 'EndPoint',
-				'data-latLng': e.latLong
+				'data-latLng': e.latLng
 			}).appendTo(outer);
 			
 			if (!journeyEl.length) {
 				outer.appendTo($('#uiContent'));
 			} else {
 				$('<button />', {
-					id: 'getQuite',
+					id: 'getQuote',
 					text: 'Get quote'
 				}).prop('disabled', true).appendTo(journeyEl);
 			}
@@ -60,9 +60,21 @@ var googleMap = (function() {
 			
 		});
 	};
+	/*
+	* Method to be change address when marker is dragged
+	*/
+	var markerDrag = function(e) {
+		var elId = ['#', this.get('id'), 'Point'].join('');
+		
+		new api.Geocoder().geocode({
+			location: e.latLng
+		}, function(results) {
+			$(elId).text(results[0].formatted_address);
+		});
+	}
 	
 	/*
-	* Function to be executed every time the map is clicked.
+	* Method to be executed every time the map is clicked.
 	*/
 	var addMarker = function(e) {
 		
@@ -81,6 +93,8 @@ var googleMap = (function() {
 				id: (clicks === 0) ? 'Start' : 'End'
 			});
 			
+			api.event.addListener(marker, "dragend", markerDrag);
+
 			locationAdd(map, e);
 			
 		} else {	
@@ -88,6 +102,45 @@ var googleMap = (function() {
 			return false;	
 		}
 		
+	}
+	
+	/*
+	* Method to display the cost
+	*/
+	var displayCost = function(response) {
+		var list = $('<dl />', {
+				'class': 'clearfix',
+				id: 'quote'
+			}),
+			format = function(number) {
+				var rounded = Math.round(number * 100) / 100;
+				var fixed = rounded.toFixed(2);
+				return fixed;
+			},
+			term = $('<dt />'),
+			desc = $('<dd />'),
+			distance = response.rows[0].elements[0].distance,
+			weight = $('#weight').val(),
+			distanceString = distance.text + 'les',
+			distanceNum = parseFloat(distance.text.split(' ')[0]),
+			distanceCost = format(distanceNum * 3),
+			weightCost = format(distanceNum * 0.25 * distanceNum),
+			totalCost = format(+distanceCost + +weightCost);
+		
+		$('<h3 />', {
+			text: 'Your quote',
+			id: 'quoteHeading'
+		}).appendTo('#uiContent');
+		
+		term.clone().html('Distance: ').appendTo(list);
+		desc.clone().html(distanceString).appendTo(list);
+		term.clone().text('Distance Cost: ').appendTo(list);
+		desc.clone().text('$' + distanceCost).appendTo(list);
+		term.clone().text('Weight cost: ').appendTo(list);
+		desc.clone().text('$' + weightCost).appendTo(list);
+		term.clone().addClass('total').text('Total: ').appendTo(list);
+		desc.clone().addClass('total').text('$' + totalCost).appendTo(list);
+		list.appendTo('#uiContent');
 	}
 	
 	/*
@@ -132,7 +185,37 @@ var googleMap = (function() {
 			homeMarkerClick = api.event.addListener(homeMarker, 'click', function() {
 				infoWindow.open(map, homeMarker);
 			});
+			
 			mapClick = api.event.addListener(map, 'click', addMarker);
+			
+			$('#weight').on('keyup', function() {
+			
+				if (timeout) {
+					clearTimeout(timeout);
+				}
+				
+				var field = $(this),
+					enableButton = function() {
+						if (field.val()) {
+							$('#getQuote').removeProp('disabled');
+						} else {
+							$('#getQuote').prop('disabled', true);
+						}
+					},
+					timeout = setTimeout(enableButton, 250);
+			});
+			
+			$('body').on('click', '#getQuote', function(e) {
+				e.preventDefault();
+				$(this).remove();
+				
+				new api.DistanceMatrixService().getDistanceMatrix({
+					origins: [$('#StartPoint').attr('data-latLng')],
+					destinations: [$('#EndPoint').attr('data-latLng')],
+					travelMode: api.TravelMode.DRIVING,
+					unitSystem: api.UnitSystem.METRIC
+				}, displayCost);
+			});
 			
 		}
 	}
