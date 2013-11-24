@@ -1,0 +1,22 @@
+/* Prototype block mobile */
+
+#mobile {
+	display: none;
+}
+
+@media all and (max-width: 960px) {
+	#mobile {
+		top: 0; right: 0; bottom: 0; left: 0;
+		position: absolute;
+		display: block;
+		background: #1C3664;
+		z-index: 100;
+	}
+	#mobile p {
+		top: 25%;
+		position: absolute;
+		text-align: center;
+		padding: 0 10%;
+		color: #FFF;
+	}
+}

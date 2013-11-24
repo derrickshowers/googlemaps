@@ -9,21 +9,24 @@
 	<meta name="viewport" content="width=device-width">
 	<link rel="stylesheet" href="css/normalize.css">
 	<link rel="stylesheet" href="css/googlemap.css">
+	<link rel="stylesheet" href="css/mobile.css">
 </head>
 <body>
-
+	
 	<div id="map"></div>
 	<div id="ui">
-		<h1>ShowFam Movers</h1>
-		<p>Enter the weight of your goods below and click on two different places on the map to see the distance between them and the cost of moving your goods.</p>
-		<h3>Our Charges</h3>
-		<dl class="clearfix">
-			<dt>Base rate (per mile)</dt>
-			<dd>&dollar; 3</dd>
-			<dt>Cost per kg per mile</dt>
-			<dd>&dollar; .25</dd>
-		</dl>
-		<input id="weight" placeholder="Weight (kg)" />
+		<div id="uiContent">
+			<h1>ShowFam Movers</h1>
+			<p>Enter the weight of your goods below and click on two different places on the map to see the distance between them and the cost of moving your goods.</p>
+			<h3>Our Charges</h3>
+			<dl class="clearfix">
+				<dt>Base rate (per mile)</dt>
+				<dd>&dollar; 3</dd>
+				<dt>Cost per kg per mile</dt>
+				<dd>&dollar; .25</dd>
+			</dl>
+			<input id="weight" placeholder="Weight (kg)" />
+		</div>
 	</div>
 	<div id="hqInfo" class="clearfix">
 		<img class="float-left" src="img/logo.jpg" />
@@ -31,6 +34,14 @@
 		<p>This is where we are based.</p>
 		<p>Call: 4077560916</p>
 		<p>Email: derrick@derrickshowers.com</p>
+	</div>
+	
+	<div id="browserHeightIndicator">
+		<p>You may want to expand your browser a bit<br />to see all sidebar content</p>
+	</div>
+	
+	<div id="mobile">
+		<p>Unfortunately, since this is just a prototype at this point, viewing this on a mobile device just wasn't in the cards.</p>
 	</div>
 
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>

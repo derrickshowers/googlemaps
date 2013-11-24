@@ -1,4 +1,9 @@
-/* googlemap */
+/*
+* googleMap opject contains settings and methods to create a new map. Returns the
+* init() function, which is called to setup the map.
+*
+* Google documentation: https://developers.google.com/maps/documentation/javascript/tutorial
+*/
 
 var googleMap = (function() {
 	
@@ -9,7 +14,7 @@ var googleMap = (function() {
 		mapClick,
 		homeMarkerClick,
 		api = google.maps, 
-		ui = $("#ui"),
+		ui = $('#ui'),
 		clicks = 0,
 		positions = [];
 		mapCenter = new api.LatLng(37.29435, -121.931167),
@@ -42,7 +47,7 @@ var googleMap = (function() {
 			}).appendTo(outer);
 			
 			if (!journeyEl.length) {
-				outer.appendTo(ui);
+				outer.appendTo($('#uiContent'));
 			} else {
 				$('<button />', {
 					id: 'getQuite',
@@ -51,6 +56,8 @@ var googleMap = (function() {
 			}
 			
 			clicks++;
+			checkBrowserHeight();
+			
 		});
 	};
 	
@@ -82,9 +89,24 @@ var googleMap = (function() {
 		}
 		
 	}
+	
+	/*
+	* Itty bitty function to check browser height so content doesn't fall
+	* off the bottom.
+	*/
+	var checkBrowserHeight = function() {
+		var winHeight = $(window).height();
+		var uiContentHeight = $('#uiContent').height() + 50;
+		if (winHeight < uiContentHeight) {
+			$('#browserHeightIndicator').fadeIn();
+		} else {
+			$('#browserHeightIndicator').fadeOut();
+		}
+	}
 
 	return {
 		init: function() {
+			
 			/*
 			* Setup the map, create a hq/home marker, create an infoWindow
 			*/
@@ -99,6 +121,10 @@ var googleMap = (function() {
 			var infoWindow = new api.InfoWindow({
 				content: document.getElementById('hqInfo')
 			});
+			
+			// Show indicator if browser height is too small
+			checkBrowserHeight();
+			$(window).resize(checkBrowserHeight);
 			
 			/*
 			* Add listeners
