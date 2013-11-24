@@ -32,8 +32,18 @@ body {
 	background: #1C3664;
 	color: #FFF;
 }
-#ui uiContent {
-	overflow: hidden;
+#ui #uiScrollbar {
+	top: 50%; left: -115px;
+	width: 250px; height: 10px;
+	position: absolute;
+	cursor: pointer;
+	-webkit-transform: rotate(90deg);
+	-ms-transform: rotate(90deg);
+	-moz-transform: rotate(90deg);
+	transform: rotate(90deg);
+	font-size: 11px;
+	letter-spacing: 1px;
+	text-align: center;
 }
 #ui h1 {
 	margin-top: .5em;

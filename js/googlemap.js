@@ -144,7 +144,7 @@ var googleMap = (function() {
 	}
 	
 	/*
-	* Itty bitty function to check browser height so content doesn't fall
+	* Itty bitty method to check browser height so content doesn't fall
 	* off the bottom.
 	*/
 	var checkBrowserHeight = function() {
@@ -155,6 +155,23 @@ var googleMap = (function() {
 		} else {
 			$('#browserHeightIndicator').fadeOut();
 		}
+	}
+	
+	/*
+	* Let's allow the user to resize the Ui sidebar
+	*/
+	var resizeUi = function() {
+		$('body').on('mousedown', '#uiScrollbar', function(e) {
+			var uiWidth = ui.width();
+			var mouseStart = e.pageX;
+			$(window).mousemove(function(e) {
+				e.preventDefault();
+				var pixelsMoved = mouseStart - e.pageX;
+				ui.width(uiWidth + pixelsMoved);
+			});
+		}).mouseup(function() {
+			$(window).unbind('mousemove');
+		});
 	}
 
 	return {
@@ -178,6 +195,9 @@ var googleMap = (function() {
 			// Show indicator if browser height is too small
 			checkBrowserHeight();
 			$(window).resize(checkBrowserHeight);
+			
+			// Add ability to resize ui
+			resizeUi();
 			
 			/*
 			* Add listeners
